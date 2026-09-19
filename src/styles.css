@@ -1,0 +1,196 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(*));
+
+/*
+ * Design system — "warm engineering register".
+ * Paper/ink light mode, near-black dark mode, warm amber accent,
+ * Inter for text, JetBrains Mono for metadata labels.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-ember: var(--ember);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.168 0.008 65);
+  --foreground: oklch(0.935 0.012 82);
+  --surface: oklch(0.215 0.009 65);
+  --card: oklch(0.198 0.009 65);
+  --card-foreground: oklch(0.935 0.012 82);
+  --popover: oklch(0.198 0.009 65);
+  --popover-foreground: oklch(0.935 0.012 82);
+  --primary: oklch(0.755 0.145 68);
+  --primary-foreground: oklch(0.168 0.008 65);
+  --ember: oklch(0.68 0.155 45);
+  --secondary: oklch(0.245 0.01 65);
+  --secondary-foreground: oklch(0.935 0.012 82);
+  --muted: oklch(0.245 0.01 65);
+  --muted-foreground: oklch(0.685 0.015 75);
+  --accent: oklch(0.265 0.014 68);
+  --accent-foreground: oklch(0.935 0.012 82);
+  --destructive: oklch(0.65 0.19 25);
+  --destructive-foreground: oklch(0.98 0.005 85);
+  --border: oklch(0.305 0.012 68);
+  --input: oklch(0.305 0.012 68);
+  --ring: oklch(0.755 0.145 68);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Monospace eyebrow label used across every section */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+@utility lift {
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in oklab, var(--color-primary) 55%, transparent);
+    box-shadow: 0 24px 48px -28px color-mix(in oklab, var(--color-primary) 70%, transparent);
+  }
+}
+
+@utility glow-ring {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-primary) 30%, transparent),
+    0 18px 40px -24px color-mix(in oklab, var(--color-primary) 80%, transparent);
+}
+
+@utility spin-slow {
+  animation: spin 18s linear infinite;
+}
+
+/* Reference-style dark hero band: scoped token override so the home hero is
+   always a deep night canvas in both light and dark themes. */
+.hero-dark {
+  --background: oklch(0.145 0.03 285);
+  --foreground: oklch(0.955 0.008 90);
+  --surface: oklch(0.19 0.03 285);
+  --card: oklch(0.185 0.03 285);
+  --card-foreground: oklch(0.955 0.008 90);
+  --muted-foreground: oklch(0.72 0.02 280);
+  --border: oklch(0.3 0.028 285);
+  --secondary: oklch(0.215 0.03 285);
+  --secondary-foreground: oklch(0.955 0.008 90);
+  --muted: oklch(0.225 0.03 285);
+  --accent: oklch(0.245 0.032 285);
+  --accent-foreground: oklch(0.955 0.008 90);
+  --popover: oklch(0.185 0.03 285);
+  --popover-foreground: oklch(0.955 0.008 90);
+  --input: oklch(0.3 0.028 285);
+  --ring: oklch(0.755 0.145 68);
+  --surface-2: oklch(0.19 0.03 285);
+  --primary: oklch(0.755 0.145 68);
+  --ember: oklch(0.68 0.155 45);
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+
+/* One-shot light sweep across the hero portrait on page load. */
+.hero-sweep::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    color-mix(in oklab, var(--color-primary) 32%, transparent) 50%,
+    transparent 60%
+  );
+  transform: translateX(-120%);
+  animation: hero-sweep 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.85s both;
+}
+
+@keyframes hero-sweep {
+  from {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-sweep::after {
+    animation: none;
+    opacity: 0;
+  }
+}
