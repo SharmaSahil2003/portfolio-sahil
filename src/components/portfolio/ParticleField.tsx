@@ -25,6 +25,10 @@ export function ParticleField({ className }: { className?: string } = {}) {
     if (!ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Keep the decorative layer inexpensive enough to coexist with scrolling
+    // and content animations on every screen size.
+    const compact = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+    const frameInterval = compact ? 1000 / 20 : 1000 / 30;
     let width = 0;
     let height = 0;
     let dpr = 1;
@@ -33,8 +37,9 @@ export function ParticleField({ className }: { className?: string } = {}) {
     const pointer = { x: -9999, y: -9999, active: false };
 
     const count = () => {
-      const base = Math.round((window.innerWidth * window.innerHeight) / 9000);
-      return Math.max(60, Math.min(200, base));
+      if (compact) return 24;
+      const base = Math.round((window.innerWidth * window.innerHeight) / 18000);
+      return Math.max(48, Math.min(110, base));
     };
 
     const seed = () => {
@@ -50,7 +55,7 @@ export function ParticleField({ className }: { className?: string } = {}) {
     };
 
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = compact ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       const host = canvas.parentElement;
       const fixed = getComputedStyle(canvas).position === "fixed";
       width = fixed || !host ? window.innerWidth : host.clientWidth;
@@ -83,21 +88,33 @@ export function ParticleField({ className }: { className?: string } = {}) {
 
     const rawColor = () => getComputedStyle(canvas).color;
     let tone = rgb();
-    const paint = (alpha: number) =>
-      tone ? `rgba(${tone},${alpha})` : rawColor();
+    let fallbackTone = rawColor();
+    const paint = () => (tone ? `rgb(${tone})` : fallbackTone);
     const withAlpha = (alpha: number) => {
-      ctx.globalAlpha = tone ? 1 : alpha;
-      return paint(alpha);
+      ctx.globalAlpha = alpha;
+      return paint();
     };
     const themeObserver = new MutationObserver(() => {
       tone = rgb();
+      fallbackTone = rawColor();
     });
     themeObserver.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["data-theme"],
     });
 
-    const step = () => {
+    let lastFrame = -Infinity;
+    const step = (now = 0) => {
+      if (document.hidden) {
+        raf = requestAnimationFrame(step);
+        return;
+      }
+
+      if (frameInterval && now - lastFrame < frameInterval) {
+        raf = requestAnimationFrame(step);
+        return;
+      }
+      lastFrame = now;
       ctx.clearRect(0, 0, width, height);
       ctx.globalAlpha = 1;
 
@@ -105,7 +122,7 @@ export function ParticleField({ className }: { className?: string } = {}) {
         p.x += p.vx;
         p.y += p.vy;
 
-        if (pointer.active) {
+        if (!compact && pointer.active) {
           const dx = p.x - pointer.x;
           const dy = p.y - pointer.y;
           const d2 = dx * dx + dy * dy;
@@ -135,18 +152,18 @@ export function ParticleField({ className }: { className?: string } = {}) {
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const d2 = dx * dx + dy * dy;
-          if (d2 < 20000) {
+          if (d2 < 16000) {
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = withAlpha((1 - d2 / 20000) * 0.3);
+            ctx.strokeStyle = withAlpha((1 - d2 / 16000) * 0.3);
             ctx.lineWidth = 1;
             ctx.stroke();
           }
         }
       }
 
-      if (pointer.active) {
+      if (!compact && pointer.active) {
         for (const p of particles) {
           const dx = p.x - pointer.x;
           const dy = p.y - pointer.y;
@@ -179,8 +196,10 @@ export function ParticleField({ className }: { className?: string } = {}) {
 
     resize();
     window.addEventListener("resize", resize);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerleave", onLeave);
+    if (!compact) {
+      window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener("pointerleave", onLeave);
+    }
 
     if (reduced) {
       step();
@@ -202,9 +221,7 @@ export function ParticleField({ className }: { className?: string } = {}) {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className={
-        className ?? "pointer-events-none fixed inset-0 z-0 text-primary opacity-70"
-      }
+      className={className ?? "pointer-events-none fixed inset-0 z-0 text-primary opacity-70"}
     />
   );
 }

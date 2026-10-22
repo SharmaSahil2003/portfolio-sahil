@@ -137,7 +137,7 @@ export function Sidebar() {
     <>
       {/* Top bar */}
       <header className="fixed inset-x-0 top-0 z-50">
-        <div className="flex h-16 items-center justify-between border-b border-border bg-background/95 px-5 shadow-sm backdrop-blur-xl md:px-10 lg:h-20 xl:px-16">
+        <div className="flex h-16 items-center justify-between border-b border-border bg-background px-5 shadow-sm md:bg-background/95 md:px-10 md:backdrop-blur-xl lg:h-20 xl:px-16">
           <Wordmark />
           <div className="hidden lg:block">
             <SocialRow />
@@ -171,7 +171,7 @@ export function Sidebar() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden border-b border-border bg-background/95 backdrop-blur-md lg:hidden"
+              className="overflow-hidden border-b border-border bg-background md:bg-background/95 md:backdrop-blur-md lg:hidden"
             >
               <div className="space-y-5 px-5 py-5">
                 <ul className="flex flex-col gap-1">

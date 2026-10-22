@@ -15,7 +15,7 @@ export function Hero() {
   const reduce = useReducedMotion();
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     const el = ref.current;
     if (!el) return;
     let frame = 0;
@@ -45,21 +45,20 @@ export function Hero() {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute z-0 -left-40 -top-40 size-[420px] rounded-full bg-primary/25 blur-[175px] transition-transform duration-500 ease-out"
+        className="pointer-events-none absolute z-0 -left-40 -top-40 hidden size-[420px] rounded-full bg-primary/25 blur-[175px] transition-transform duration-500 ease-out md:block"
         style={{ transform: `translate3d(${pointer.x * 22}px, ${pointer.y * 22}px, 0)` }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute z-0 -right-40 -top-40 size-[420px] rounded-full bg-primary/25 blur-[175px] transition-transform duration-500 ease-out"
+        className="pointer-events-none absolute z-0 -right-40 -top-40 hidden size-[420px] rounded-full bg-primary/25 blur-[175px] transition-transform duration-500 ease-out md:block"
         style={{ transform: `translate3d(${pointer.x * 30}px, ${pointer.y * 30}px, 0)` }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute z-0 -right-24 top-64 size-[500px] rounded-full bg-ember/20 blur-[175px] transition-transform duration-500 ease-out"
+        className="pointer-events-none absolute z-0 -right-24 top-64 hidden size-[500px] rounded-full bg-ember/20 blur-[175px] transition-transform duration-500 ease-out md:block"
         style={{ transform: `translate3d(${pointer.x * -28}px, ${pointer.y * -28}px, 0)` }}
       />
-
-      <ParticleField className="pointer-events-none absolute inset-0 z-[1] text-primary opacity-90" />
+      <ParticleField className="pointer-events-none absolute inset-0 z-[1] text-primary opacity-80" />
 
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-5rem)] max-w-[1400px] items-center gap-12 px-5 pb-20 pt-28 md:px-10 lg:grid-cols-2 lg:gap-6 lg:pb-16 lg:pt-24">
         {/* Left column — headline */}
@@ -143,7 +142,7 @@ export function Hero() {
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-none absolute -inset-10 mix-blend-color-dodge bg-[radial-gradient(circle_at_60%_45%,color-mix(in_oklab,var(--color-primary)_45%,transparent),transparent_62%)] blur-2xl motion-safe:animate-[pulse_6s_cubic-bezier(0.4,0,0.6,1)_infinite]"
+              className="pointer-events-none absolute -inset-10 mix-blend-color-dodge bg-[radial-gradient(circle_at_60%_45%,color-mix(in_oklab,var(--color-primary)_45%,transparent),transparent_62%)] blur-2xl md:motion-safe:animate-[pulse_6s_cubic-bezier(0.4,0,0.6,1)_infinite]"
             />
             <motion.div
               aria-hidden="true"

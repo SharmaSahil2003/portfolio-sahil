@@ -4,6 +4,7 @@ import fakeNewsImg from "@/assets/proj-fakenews.jpg";
 import contactsImg from "@/assets/proj-contacts.jpg";
 import hotstarImg from "@/assets/proj-hotstar.jpg";
 import netflixImg from "@/assets/proj-netflix.jpg";
+import portfolioPilotImg from "@/assets/proj-portfoliopilot.jpg";
 
 export const profile = {
   name: "Sahil S. Sharma",
@@ -16,7 +17,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/sahil-sharma-58948222a/",
   leetcode: "https://leetcode.com/sharmazon2003/",
   summary:
-    "Software engineer with a strong foundation in data structures, algorithms and full-stack development. I build production REST APIs and frontend systems at enterprise scale — backed by 1500+ LeetCode problems solved, two published IEEE papers and a hackathon-winning automated QA pipeline.",
+    "Software engineer with a strong foundation in data structures, algorithms and full-stack development. I build production REST APIs and frontend systems at enterprise scale — backed by 1500+ LeetCode problems solved, two published IEEE papers and a hackathon-winning automated QA pipeline. Seeking a Software Development Engineer role on a high-scale engineering team.",
 };
 
 export const typedRoles = [
@@ -39,41 +40,51 @@ export const skillGroups = [
     kind: "bars" as const,
     items: [
       { name: "C++", level: 92 },
-      { name: "Java", level: 85 },
       { name: "Python", level: 84 },
-      { name: "C", level: 78 },
+      { name: "Java", level: 85 },
+      { name: "TypeScript", level: 82 },
+      { name: "JavaScript", level: 80 },
+      { name: "SQL", level: 80 },
     ],
   },
   {
-    title: "Technologies",
+    title: "Frameworks & infrastructure",
     kind: "chips" as const,
     items: [
-      "React JS",
-      "Spring Boot",
+      "React",
       "FastAPI",
+      "Flask",
+      "Spring Boot",
       "REST APIs",
+      "HTML / CSS",
+      "Bootstrap",
+      "PostgreSQL",
       "MySQL",
       "MongoDB",
-      "Node.js",
-      "Bootstrap",
-      "HTML / CSS",
+      "Docker",
       "Git",
     ],
   },
   {
-    title: "Core CS",
-    kind: "list" as const,
+    title: "AI & core CS",
+    kind: "chips" as const,
     items: [
+      "LLMs",
+      "RAG",
+      "NLP",
+      "Sentence Transformers",
+      "Semantic Search",
+      "Machine Learning",
       "Data Structures & Algorithms",
+      "Object-Oriented Programming",
       "Operating Systems",
       "Computer Networks",
       "Database Management Systems",
-      "Machine Learning",
     ],
   },
 ];
 
-export const tools = ["VS Code", "IntelliJ IDEA", "Eclipse", "Postman", "GitHub"];
+export const tools = ["VS Code", "IntelliJ IDEA", "Eclipse", "Postman", "GitHub", "Docker"];
 
 export const experience = [
   {
@@ -82,32 +93,38 @@ export const experience = [
     period: "Jun 2025 — Present",
     location: "Pune, Maharashtra",
     summary:
-      "Building frontend and backend features across four enterprise platforms spanning test automation, data quality and contract intelligence.",
+      "Building scalable React frontend features and REST APIs across enterprise test automation, data quality and contract-intelligence platforms.",
     workstreams: [
       {
         name: "Testra — AI-Powered Test Management & Automation",
         points: [
-          "Built and scaled frontend and backend features supporting UI, ETL, CRM, API and BI testing workflows, including grid-level test-case creation, editing, bulk operations and test-suite configuration.",
-          "Designed REST APIs for bulk test-case import from CSV with validation, background workflows and multithreaded batch/parallel processing for large-scale data ingestion.",
+          "Developed and scaled React/TypeScript frontend features and REST APIs for test-case management, generation, execution, test suites, releases and UI, ETL, CRM and API testing workflows.",
+          "Built scalable import and bulk-operation APIs with batch and parallel processing for high-volume test data.",
+          "Implemented test-case generation workflows with real-time progress tracking, agent reasoning logs, workflow monitoring, recovery mechanisms and long-running-operation handling.",
+          "Contributed reusable components and responsive modules for projects, users, releases, audit history, defects, automation suites, reporting and configuration; reduced redundant API requests and improved reliability.",
+          "Integrated Ask Testra assistant capabilities, including chatbot APIs, document management, workflow orchestration, conversation management, reasoning visualisation and stop-generation controls.",
         ],
       },
       {
         name: "BRMS — Data Quality Platform",
         points: [
-          "Engineered REST APIs and frontend modules for creating, editing, cloning and managing data quality rules and execution jobs, extended with versioning and audit history.",
-          "Delivered phase-2 governance: ticketing/promotion workflows, lifecycle-based rule states, environment-specific views and RBAC-driven access control across dev, test and production.",
+          "Developed React modules and REST APIs for creating, editing, cloning and managing data-quality rules and execution jobs, including versioning and audit history.",
+          "Delivered approval and ticketing workflows, lifecycle-based rule states, environment-specific views and promotion across development, test and production.",
+          "Implemented RBAC-driven access control for governed data-quality operations.",
         ],
       },
       {
         name: "ContractIQ — Contract Intelligence Platform",
         points: [
-          "Developed the contract repository with advanced search and filtering, and contributed to role-based access control with user restrictions and secure redirection.",
+          "Developed the contract repository with advanced search, filtering and repository-management capabilities for a contract-analytics platform.",
+          "Built frontend enhancements and contributed to RBAC implementation, user restrictions, secure redirection and access-control workflows.",
         ],
       },
       {
         name: "Asset Wizard",
         points: [
-          "Enhanced features and UI for an enterprise contract-intelligence chatbot; validated contract-extraction accuracy across contract types.",
+          "Enhanced features and UI for an enterprise contract-intelligence chatbot.",
+          "Validated contract-extraction accuracy across contract types.",
         ],
       },
     ],
@@ -118,7 +135,7 @@ export type Project = {
   title: string;
   description: string;
   tags: string[];
-  image: string;
+  image?: string;
   github?: string;
   demo?: string;
   year: string;
@@ -126,10 +143,18 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    title: "Semantic Comment Clustering & Engagement Service",
+    title: "PortfolioPilot — AI Portfolio Evolution Platform",
     description:
-      "Creator–subscriber engagement service using Sentence-BERT and DBSCAN for semantic clustering of comments, with a cosine-similarity chatbot for automated replies, cluster visualisation and engagement analytics. Findings published in two IEEE papers.",
-    tags: ["Python", "SBERT", "DBSCAN", "Flask", "MongoDB", "React"],
+      "Agentic platform that turns updated résumés into evolving developer portfolios. Its three-level architecture supports structured data synchronisation, page-level code generation and full-workspace modifications with versioned workspaces, code diffs, rollback, human approval and automated validation.",
+    tags: ["React", "Python", "LLMs", "RAG", "FastAPI", "PostgreSQL", "Docker"],
+    image: portfolioPilotImg,
+    year: "2026",
+  },
+  {
+    title: "Agentic Social Media Intelligence Platform",
+    description:
+      "Agentic AI platform that combines RAG, semantic embeddings, comment clustering and sentiment analysis to automate social-media comment understanding and creator engagement. Flask APIs and MongoDB persist comments, embeddings, clusters, sentiment scores and conversation context behind a React analytics and chatbot interface. Findings are published in two IEEE papers.",
+    tags: ["Python", "LLMs", "RAG", "NLP", "Flask", "MongoDB", "React"],
     image: clusteringImg,
     github: "https://github.com/SharmaSahil2003",
     year: "2025",

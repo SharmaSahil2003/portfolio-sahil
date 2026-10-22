@@ -19,7 +19,7 @@ export const Route = createFileRoute("/experience")({
     links: [{ rel: "canonical", href: "/experience" }],
   }),
   component: () => (
-    <PageShell>
+    <PageShell dark>
       <Experience />
     </PageShell>
   ),

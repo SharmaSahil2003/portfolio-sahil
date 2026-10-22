@@ -19,7 +19,7 @@ export const Route = createFileRoute("/about")({
     links: [{ rel: "canonical", href: "/about" }],
   }),
   component: () => (
-    <PageShell>
+    <PageShell dark>
       <About />
     </PageShell>
   ),

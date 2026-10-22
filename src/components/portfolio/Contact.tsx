@@ -38,7 +38,7 @@ export function Contact() {
     <section id="contact" className="relative overflow-hidden">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-60 right-[-10%] size-[520px] rounded-full bg-primary/10 blur-3xl"
+        className="pointer-events-none absolute -bottom-60 right-[-10%] hidden size-[520px] rounded-full blur-3xl md:block"
       />
       <div className="relative mx-auto grid max-w-[1400px] gap-12 px-5 py-20 md:grid-cols-2 md:px-10 xl:px-16">
         <div>

@@ -13,7 +13,6 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Sidebar } from "@/components/portfolio/Sidebar";
 import { Footer } from "@/components/portfolio/Footer";
-import { ParticleField } from "@/components/portfolio/ParticleField";
 
 function NotFoundComponent() {
   return (
@@ -131,7 +130,6 @@ function RootComponent() {
       >
         Skip to content
       </a>
-      <ParticleField />
       <Sidebar />
       <div className="relative z-10 flex min-h-screen flex-col pt-16 lg:pt-20 lg:pr-20">
         <main id="main" className="flex-1">

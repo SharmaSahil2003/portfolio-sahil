@@ -4,7 +4,7 @@ import { PageShell } from "@/components/portfolio/PageShell";
 
 const title = "Projects — Sahil S. Sharma";
 const description =
-  "Selected full-stack and machine-learning projects with source links: semantic comment clustering, fake news detection and more.";
+  "Selected AI, full-stack and machine-learning projects, including agentic social-media intelligence and portfolio evolution platforms.";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
