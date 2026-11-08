@@ -27,8 +27,8 @@ export function ParticleField({ className }: { className?: string } = {}) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // Keep the decorative layer inexpensive enough to coexist with scrolling
     // and content animations on every screen size.
-    const compact = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
-    const frameInterval = compact ? 1000 / 20 : 1000 / 30;
+    let compact = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+    let frameInterval = compact ? 1000 / 20 : 1000 / 30;
     let width = 0;
     let height = 0;
     let dpr = 1;
@@ -55,6 +55,8 @@ export function ParticleField({ className }: { className?: string } = {}) {
     };
 
     const resize = () => {
+      compact = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+      frameInterval = compact ? 1000 / 20 : 1000 / 30;
       dpr = compact ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       const host = canvas.parentElement;
       const fixed = getComputedStyle(canvas).position === "fixed";
@@ -105,10 +107,7 @@ export function ParticleField({ className }: { className?: string } = {}) {
 
     let lastFrame = -Infinity;
     const step = (now = 0) => {
-      if (document.hidden) {
-        raf = requestAnimationFrame(step);
-        return;
-      }
+      if (document.hidden) return;
 
       if (frameInterval && now - lastFrame < frameInterval) {
         raf = requestAnimationFrame(step);
@@ -183,6 +182,7 @@ export function ParticleField({ className }: { className?: string } = {}) {
     };
 
     const onMove = (e: PointerEvent) => {
+      if (compact) return;
       const rect = canvas.getBoundingClientRect();
       pointer.x = e.clientX - rect.left;
       pointer.y = e.clientY - rect.top;
@@ -193,13 +193,16 @@ export function ParticleField({ className }: { className?: string } = {}) {
       pointer.x = -9999;
       pointer.y = -9999;
     };
+    const onVisibilityChange = () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else if (!reduced) raf = requestAnimationFrame(step);
+    };
 
     resize();
     window.addEventListener("resize", resize);
-    if (!compact) {
-      window.addEventListener("pointermove", onMove, { passive: true });
-      window.addEventListener("pointerleave", onLeave);
-    }
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerleave", onLeave);
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     if (reduced) {
       step();
@@ -214,6 +217,7 @@ export function ParticleField({ className }: { className?: string } = {}) {
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
 

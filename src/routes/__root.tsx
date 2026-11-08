@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,6 +14,9 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Sidebar } from "@/components/portfolio/Sidebar";
 import { Footer } from "@/components/portfolio/Footer";
+import { RouteTransition } from "@/components/portfolio/RouteTransition";
+import { ParticleField } from "@/components/portfolio/ParticleField";
+import { RuntimeTraceScene } from "@/components/portfolio/RuntimeTraceScene";
 
 function NotFoundComponent() {
   return (
@@ -86,7 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Portfolio of Sahil S. Sharma, software development engineer at ZS Associates — REST APIs, React frontends and full-stack projects.",
       },
       { name: "author", content: "Sahil S. Sharma" },
-      { name: "theme-color", content: "#1a1714" },
+      { name: "theme-color", content: "#080d10" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -94,7 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -121,6 +125,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const routePending = useRouterState({ select: (state) => state.status === "pending" });
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -131,8 +137,15 @@ function RootComponent() {
         Skip to content
       </a>
       <Sidebar />
-      <div className="relative z-10 flex min-h-screen flex-col pt-16 lg:pt-20 lg:pr-20">
-        <main id="main" className="flex-1">
+      {pathname !== "/" ? (
+        <>
+          <ParticleField className="pointer-events-none fixed inset-0 z-0 text-primary opacity-45" />
+          <RuntimeTraceScene variant="ambient" />
+        </>
+      ) : null}
+      <RouteTransition pending={routePending} />
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <main id="main" className="app-main flex-1" aria-busy={routePending}>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
         </main>

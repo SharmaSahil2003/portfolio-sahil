@@ -38,14 +38,27 @@ export const getLeetCodeStats = createServerFn({ method: "GET" }).handler(
       });
       if (!res.ok) return null;
 
-      const json = (await res.json()) as any;
+      const json = (await res.json()) as {
+        data?: {
+          matchedUser?: {
+            username?: string;
+            submitStatsGlobal?: {
+              acSubmissionNum?: Array<{ difficulty: string; count: number }>;
+            };
+            userCalendar?: {
+              streak?: number;
+              totalActiveDays?: number;
+              submissionCalendar?: string;
+            };
+          } | null;
+        };
+      };
       const user = json?.data?.matchedUser;
       if (!user) return null;
 
       const nums: Array<{ difficulty: string; count: number }> =
         user.submitStatsGlobal?.acSubmissionNum ?? [];
-      const pick = (d: string) =>
-        nums.find((n) => n.difficulty.toLowerCase() === d)?.count ?? 0;
+      const pick = (d: string) => nums.find((n) => n.difficulty.toLowerCase() === d)?.count ?? 0;
 
       const raw = JSON.parse(user.userCalendar?.submissionCalendar ?? "{}") as Record<
         string,

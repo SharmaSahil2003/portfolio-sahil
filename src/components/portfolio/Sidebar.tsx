@@ -1,213 +1,116 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "motion/react";
-import {
-  Home,
-  User,
-  Code2,
-  Activity,
-  Briefcase,
-  FolderGit2,
-  GraduationCap,
-  Mail,
-  Download,
-  Menu,
-  X,
-  Github,
-  Linkedin,
-} from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Activity, Download, Github, Linkedin, Mail, Menu, X } from "lucide-react";
 import { profile } from "@/lib/portfolio-data";
 import resumeAsset from "@/assets/Sahil_Sharma_Resume_V2.pdf";
 
-export const navItems = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/about", label: "About", icon: User },
-  { to: "/skills", label: "Skills", icon: Code2 },
-  { to: "/experience", label: "Experience", icon: Briefcase },
-  { to: "/projects", label: "Projects", icon: FolderGit2 },
-  { to: "/education", label: "Education", icon: GraduationCap },
-  { to: "/contact", label: "Contact", icon: Mail },
+const navItems = [
+  { to: "/", label: "Home" },
+  { to: "/about", label: "About" },
+  { to: "/skills", label: "Skills" },
+  { to: "/experience", label: "Experience" },
+  { to: "/projects", label: "Projects" },
+  { to: "/education", label: "Education" },
+  { to: "/contact", label: "Contact" },
 ] as const;
 
-function Wordmark() {
+function SocialLinks({ mobile = false }: { mobile?: boolean }) {
   return (
-    <Link to="/" className="text-lg font-bold tracking-tight sm:text-xl">
-      Sahil <span className="text-primary">Sharma</span>
-    </Link>
-  );
-}
-
-function SocialRow() {
-  return (
-    <div className="flex items-center gap-4 text-muted-foreground">
-      <a
-        href={profile.github}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="GitHub"
-        className="transition-colors hover:text-primary"
-      >
-        <Github className="size-[18px]" />
+    <div className={mobile ? "atlas-mobile-socials atlas-socials" : "atlas-socials"}>
+      <a href={profile.github} target="_blank" rel="noreferrer noopener" aria-label="GitHub">
+        <Github aria-hidden="true" />
       </a>
-      <a
-        href={profile.linkedin}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="LinkedIn"
-        className="transition-colors hover:text-primary"
-      >
-        <Linkedin className="size-[18px]" />
+      <a href={profile.linkedin} target="_blank" rel="noreferrer noopener" aria-label="LinkedIn">
+        <Linkedin aria-hidden="true" />
       </a>
-      <a
-        href={profile.leetcode}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="LeetCode"
-        className="transition-colors hover:text-primary"
-      >
-        <Activity className="size-[18px]" />
+      <a href={profile.leetcode} target="_blank" rel="noreferrer noopener" aria-label="LeetCode">
+        <Activity aria-hidden="true" />
       </a>
-      <a
-        href={`mailto:${profile.email}`}
-        aria-label="Email"
-        className="transition-colors hover:text-primary"
-      >
-        <Mail className="size-[18px]" />
+      <a href={`mailto:${profile.email}`} aria-label="Email Sahil">
+        <Mail aria-hidden="true" />
       </a>
-      <a
-        href={resumeAsset}
-        download="Sahil_Sharma_Resume.pdf"
-        aria-label="Download résumé"
-        className="transition-colors hover:text-primary"
-      >
-        <Download className="size-[18px]" />
+      <a href={resumeAsset} download="Sahil_Sharma_Resume.pdf" aria-label="Download résumé">
+        <Download aria-hidden="true" />
       </a>
     </div>
   );
 }
 
-/** Floating vertical icon rail on the right (desktop). */
-function IconRail() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-
+function ChapterLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
-    <nav
-      aria-label="Primary"
-      className="fixed right-5 top-1/2 z-50 hidden -translate-y-1/2 lg:block"
-    >
-      <ul className="flex flex-col items-center gap-1 rounded-full border border-border bg-card/70 px-2 py-4 shadow-xl backdrop-blur-xl">
-        {navItems.map((item) => {
-          const active = pathname === item.to;
-          const Icon = item.icon;
-          return (
-            <li key={item.to} className="group relative">
-              <Link
-                to={item.to}
-                aria-label={item.label}
-                aria-current={active ? "page" : undefined}
-                className={`relative grid size-10 place-items-center rounded-full transition-colors ${
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {active ? (
-                  <motion.span
-                    layoutId="rail-active"
-                    className="absolute inset-0 rounded-full bg-primary/12 ring-1 ring-primary/40"
-                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                  />
-                ) : null}
-                <Icon className="relative size-[18px]" aria-hidden="true" />
-              </Link>
-              <span className="pointer-events-none absolute right-[calc(100%+12px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md border border-border bg-card px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                {item.label}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <>
+      {navItems.map((item, index) => (
+        <Link
+          key={item.to}
+          to={item.to}
+          onClick={onNavigate}
+          aria-current={pathname === item.to ? "page" : undefined}
+          className="atlas-nav-link"
+        >
+          <small>{String(index).padStart(2, "0")}</small>
+          {item.label}
+        </Link>
+      ))}
+    </>
   );
 }
 
 export function Sidebar() {
   const [open, setOpen] = useState(false);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const reduceMotion = useReducedMotion();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+
+  useEffect(() => setOpen(false), [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
 
   return (
-    <>
-      {/* Top bar */}
-      <header className="fixed inset-x-0 top-0 z-50">
-        <div className="flex h-16 items-center justify-between border-b border-border bg-background px-5 shadow-sm md:bg-background/95 md:px-10 md:backdrop-blur-xl lg:h-20 xl:px-16">
-          <Wordmark />
-          <div className="hidden lg:block">
-            <SocialRow />
-          </div>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            className="grid size-9 place-items-center rounded-md border border-border text-muted-foreground lg:hidden"
+    <header className="atlas-header">
+      <div className="atlas-wrap atlas-header-inner">
+        <Link to="/" className="atlas-brand" aria-label="Sahil Sharma — home">
+          Sahil <span>Sharma</span>
+        </Link>
+        <nav className="atlas-desktop-nav" aria-label="Primary navigation">
+          <ChapterLinks pathname={pathname} />
+        </nav>
+        <SocialLinks />
+        <button
+          type="button"
+          className="atlas-menu-toggle"
+          onClick={() => setOpen((value) => !value)}
+          aria-label={open ? "Close navigation" : "Open navigation"}
+          aria-expanded={open}
+          aria-controls="mobile-primary-navigation"
+        >
+          {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+        </button>
+      </div>
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.nav
+            id="mobile-primary-navigation"
+            aria-label="Primary navigation"
+            className="atlas-mobile-nav"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.2, 0.7, 0.2, 1] }}
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={open ? "x" : "menu"}
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.18 }}
-                className="grid place-items-center"
-              >
-                {open ? <X className="size-4" /> : <Menu className="size-4" />}
-              </motion.span>
-            </AnimatePresence>
-          </button>
-        </div>
-
-        <AnimatePresence>
-          {open ? (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden border-b border-border bg-background md:bg-background/95 md:backdrop-blur-md lg:hidden"
-            >
-              <div className="space-y-5 px-5 py-5">
-                <ul className="flex flex-col gap-1">
-                  {navItems.map((item) => {
-                    const active = pathname === item.to;
-                    const Icon = item.icon;
-                    return (
-                      <li key={item.to}>
-                        <Link
-                          to={item.to}
-                          onClick={() => setOpen(false)}
-                          aria-current={active ? "page" : undefined}
-                          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-[0.14em] transition-colors ${
-                            active
-                              ? "bg-primary/10 text-foreground ring-1 ring-primary/40"
-                              : "text-muted-foreground hover:text-foreground"
-                          }`}
-                        >
-                          <Icon
-                            className={`size-4 ${active ? "text-primary" : ""}`}
-                            aria-hidden="true"
-                          />
-                          {item.label}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-                <SocialRow />
-              </div>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-      </header>
-
-      <IconRail />
-    </>
+            <div className="atlas-wrap atlas-mobile-nav-inner">
+              <ChapterLinks pathname={pathname} onNavigate={() => setOpen(false)} />
+              <SocialLinks mobile />
+            </div>
+          </motion.nav>
+        ) : null}
+      </AnimatePresence>
+    </header>
   );
 }

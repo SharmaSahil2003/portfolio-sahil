@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Hero } from "@/components/portfolio/Hero";
-import { PageShell } from "@/components/portfolio/PageShell";
 
 const title = "Sahil S. Sharma — Software Development Engineer";
 const description =
@@ -22,9 +21,5 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  return (
-    <PageShell>
-      <Hero />
-    </PageShell>
-  );
+  return <Hero />;
 }

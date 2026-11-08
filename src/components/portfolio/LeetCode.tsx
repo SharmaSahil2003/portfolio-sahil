@@ -34,13 +34,7 @@ function level(count: number) {
   return 4;
 }
 
-const levelClass = [
-  "bg-muted",
-  "bg-primary/25",
-  "bg-primary/45",
-  "bg-primary/70",
-  "bg-primary",
-];
+const levelClass = ["bg-muted", "bg-primary/25", "bg-primary/45", "bg-primary/70", "bg-primary"];
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -54,9 +48,7 @@ export function LeetCode() {
 
   const weeks = buildWeeks();
   const calendar = data?.calendar ?? {};
-  const yearTotal = weeks
-    .flat()
-    .reduce((sum, day) => sum + (calendar[isoDay(day)] ?? 0), 0);
+  const yearTotal = weeks.flat().reduce((sum, day) => sum + (calendar[isoDay(day)] ?? 0), 0);
 
   const stats = [
     { label: "Solved", value: data ? data.total.toLocaleString() : "1500+" },
@@ -69,10 +61,15 @@ export function LeetCode() {
 
   return (
     <section id="leetcode" className="">
-      <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 xl:px-16">
-        <SectionHeading index="03" title="LeetCode activity" meta="Live · leetcode.com" />
+      <div className="atlas-wrap">
+        <SectionHeading
+          index="03"
+          title="Problem-solving record"
+          meta="Live · LeetCode"
+          level="section"
+        />
 
-        <Reveal className="mt-10 rounded-xl border border-border bg-card p-6 md:p-8">
+        <Reveal className="leetcode-ledger">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <h3 className="eyebrow">Submission calendar</h3>
@@ -94,7 +91,7 @@ export function LeetCode() {
             </a>
           </div>
 
-          <div className="mt-6 overflow-x-auto pb-2">
+          <div className="ledger-scroll">
             <div className="min-w-[720px]">
               <div className="mb-1.5 flex font-mono text-[10px] text-muted-foreground">
                 {weeks.map((week, i) => {
@@ -140,7 +137,7 @@ export function LeetCode() {
             </div>
           </div>
 
-          <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
+          <dl className="ledger-stats">
             {stats.map((stat) => (
               <div key={stat.label} className="bg-card px-4 py-3">
                 <dt className="eyebrow">{stat.label}</dt>

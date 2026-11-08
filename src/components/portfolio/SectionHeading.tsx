@@ -1,19 +1,28 @@
 import { Reveal } from "./Reveal";
 
-export function SectionHeading({
-  index,
-  title,
-  meta,
-}: {
+type SectionHeadingProps = {
   index: string;
   title: string;
   meta?: string;
-}) {
+  level?: "page" | "section";
+};
+
+export function SectionHeading({ index, title, meta, level = "page" }: SectionHeadingProps) {
+  if (level === "section") {
+    return (
+      <Reveal className="section-head">
+        <span className="section-head-index">{index}</span>
+        <h2>{title}</h2>
+        {meta ? <span className="section-head-meta">{meta}</span> : null}
+      </Reveal>
+    );
+  }
+
   return (
-    <Reveal className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-      <span className="font-mono text-xs text-primary">{index}</span>
-      <h2 className="text-2xl font-semibold tracking-tight text-balance md:text-3xl">{title}</h2>
-      {meta ? <span className="eyebrow ml-auto">{meta}</span> : null}
+    <Reveal className="chapter-head">
+      <span className="chapter-head-index">CHAPTER {index}</span>
+      <h1>{title}</h1>
+      {meta ? <span className="chapter-head-meta">{meta}</span> : null}
     </Reveal>
   );
 }
