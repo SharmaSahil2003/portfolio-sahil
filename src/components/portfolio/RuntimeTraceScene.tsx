@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState, type ComponentType } from "re
 export type RuntimeTraceCanvasProps = {
   onFailure: () => void;
   reducedMotion: boolean;
+  variant: "hero" | "ambient";
 };
 
 const tracePaths = [
@@ -11,7 +12,22 @@ const tracePaths = [
   "M 48 56 C 54 71 67 78 82 78",
 ];
 
-function TraceFallback() {
+function TraceFallback({ variant }: { variant: "hero" | "ambient" }) {
+  if (variant === "hero") {
+    return (
+      <svg className="trace-fallback trace-fallback--hero" viewBox="0 0 100 100" aria-hidden="true">
+        <ellipse cx="50" cy="50" rx="47" ry="19" transform="rotate(-28 50 50)" />
+        <ellipse cx="50" cy="50" rx="42" ry="15" transform="rotate(58 50 50)" />
+        <circle cx="50" cy="50" r="34" />
+        <path d="M50 16 C32 27 32 73 50 84 C68 73 68 27 50 16Z" />
+        <path d="M18 39 C32 47 68 47 82 39 M17 50 C31 54 69 54 83 50 M18 61 C32 53 68 53 82 61" />
+        <circle cx="19" cy="35" r="2" />
+        <circle cx="81" cy="65" r="2" />
+        <circle cx="50" cy="16" r="2" />
+      </svg>
+    );
+  }
+
   return (
     <svg className="trace-fallback" viewBox="0 0 100 100" aria-hidden="true">
       <path d={tracePaths[0]} />
@@ -94,9 +110,9 @@ export function RuntimeTraceScene({ variant = "hero" }: { variant?: "hero" | "am
       className={`runtime-trace runtime-trace--${variant}`}
       data-webgl-fallback={failed || reducedMotion || staticOnly || undefined}
     >
-      <TraceFallback />
+      <TraceFallback variant={variant} />
       {visible && !failed && !reducedMotion && Scene ? (
-        <Scene reducedMotion={reducedMotion} onFailure={handleFailure} />
+        <Scene reducedMotion={reducedMotion} onFailure={handleFailure} variant={variant} />
       ) : null}
     </div>
   );

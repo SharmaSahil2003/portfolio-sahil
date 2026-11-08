@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import type { RuntimeTraceCanvasProps } from "./RuntimeTraceScene";
 
-export function RuntimeTraceCanvas({ onFailure, reducedMotion }: RuntimeTraceCanvasProps) {
+export function RuntimeTraceCanvas({ onFailure, reducedMotion, variant }: RuntimeTraceCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -22,7 +22,9 @@ export function RuntimeTraceCanvas({ onFailure, reducedMotion }: RuntimeTraceCan
     }
 
     const compact = window.matchMedia("(max-width: 680px)").matches;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1 : 1.5));
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio || 1, compact ? 1 : variant === "hero" ? 2 : 1.5),
+    );
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     renderer.setClearColor(0x000000, 0);
 
@@ -48,6 +50,12 @@ export function RuntimeTraceCanvas({ onFailure, reducedMotion }: RuntimeTraceCan
       }),
     );
     system.add(nodes);
+
+    const focusGeometry = new THREE.SphereGeometry(compact ? 0.09 : 0.1, 12, 10);
+    const focusMaterial = new THREE.MeshBasicMaterial({ color: 0x83c9c7 });
+    const focusNode = new THREE.Mesh(focusGeometry, focusMaterial);
+    focusNode.visible = false;
+    if (variant === "hero") system.add(focusNode);
 
     const orbitGeometry = new THREE.TorusGeometry(1.75, 0.006, 4, 96);
     const orbitMaterial = new THREE.MeshBasicMaterial({
@@ -99,7 +107,8 @@ export function RuntimeTraceCanvas({ onFailure, reducedMotion }: RuntimeTraceCan
 
     const render = (time: number) => {
       if (!visible || !inViewport) return;
-      if (time - lastDraw >= 1000 / 30 || reducedMotion) {
+      const targetFrame = variant === "hero" ? 1000 / 60 : 1000 / 30;
+      if (time - lastDraw >= targetFrame || reducedMotion) {
         lastDraw = time;
         target.set(pointerY * 0.18, scroll * 0.00022 + pointerX * 0.18);
         if (!reducedMotion) {
@@ -131,6 +140,37 @@ export function RuntimeTraceCanvas({ onFailure, reducedMotion }: RuntimeTraceCan
     };
     const onPointer = (event: PointerEvent) => {
       if (event.pointerType === "touch") return;
+      if (variant === "hero") {
+        const rect = canvas.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / Math.max(rect.width, 1);
+        const y = (event.clientY - rect.top) / Math.max(rect.height, 1);
+        const inStage = x >= 0 && x <= 1 && y >= 0 && y <= 1;
+        focusNode.visible = inStage && !reducedMotion;
+        if (inStage) {
+          pointerX = x - 0.5;
+          pointerY = y - 0.5;
+          const attribute = geometry.getAttribute("position");
+          const targetX = (x - 0.5) * 2.4;
+          const targetY = (0.5 - y) * 2.4;
+          let nearest = 0;
+          let nearestDistance = Number.POSITIVE_INFINITY;
+          for (let index = 0; index < attribute.count; index += 1) {
+            const dx = attribute.getX(index) - targetX;
+            const dy = attribute.getY(index) - targetY;
+            const distance = dx * dx + dy * dy;
+            if (distance < nearestDistance) {
+              nearest = index;
+              nearestDistance = distance;
+            }
+          }
+          focusNode.position.set(
+            attribute.getX(nearest),
+            attribute.getY(nearest),
+            attribute.getZ(nearest),
+          );
+        }
+        return;
+      }
       pointerX = event.clientX / Math.max(window.innerWidth, 1) - 0.5;
       pointerY = event.clientY / Math.max(window.innerHeight, 1) - 0.5;
     };
@@ -170,9 +210,11 @@ export function RuntimeTraceCanvas({ onFailure, reducedMotion }: RuntimeTraceCan
       (orbitB.material as THREE.Material).dispose();
       anchorGeometry.dispose();
       anchorMaterial.dispose();
+      focusGeometry.dispose();
+      focusMaterial.dispose();
       renderer.dispose();
     };
-  }, [onFailure, reducedMotion]);
+  }, [onFailure, reducedMotion, variant]);
 
   return <canvas ref={canvasRef} className="runtime-trace-webgl" />;
 }
